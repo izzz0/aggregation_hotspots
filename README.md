@@ -22,7 +22,21 @@ pip install -r requirements.txt
 ```shell
 python main.py
 ```
-
+可以在weight中设置每个网站的权重共十条
+```shell
+#聚合各大网站头条，默认权重为2
+        weight = {
+            "今日头条": 2,
+            "微博头条": 2,
+            "知乎热榜": 2,
+            "微信热榜": 2,
+            "B站热榜": 2
+        }
+```
+如果要修改总数请在amount这里修改
+```shell
+self.amount=10
+```
 ## 示例
 以下是程序的输出示例：
 {'今日头条': {'头条标题1': 'https://www.toutiao.com/article1'}, '微博头条': {'热搜词1': 'https://s.weibo.com/weibo?q=热搜词1'}, '知乎热榜': {'问题1': 'https://www.zhihu.com/question1'}, '微信热榜': {'文章1': 'https://weixin-url1'}, 'B站热榜': {'视频1': 'https://bilibili-url1'}}
