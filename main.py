@@ -36,7 +36,7 @@ class HotspotsAggregator:
     def save_data(self, site, data, key):
         # 保存到字典中
         for index, value in enumerate(data[key]):
-            if index < amount:
+            if index < self.amount:
                 if site == "微博头条":
                     if index == 0:
                         continue
