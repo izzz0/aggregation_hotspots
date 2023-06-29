@@ -5,20 +5,23 @@ Hotspots Aggregator 是一个用于聚合各大网站热点新闻的 Python 程�
 ## 安装
 
 1. 克隆代码仓库到本地：
-   ```shell
-   git clone https://github.com/your-username/hotspots-aggregator.git
-   ```
+```shell
+git clone https://github.com/your-username/hotspots-aggregator.git
+```
 2. 进入项目目录：
-  ```shell
-  cd hotspots-aggregator
+```shell
+cd hotspots-aggregator
+```
 3. 安装依赖项（建议使用虚拟环境）：
-  ```shell
-  pip install -r requirements.txt
+```shell
+pip install -r requirements.txt
+```
 
 ## 使用方式
 在项目根目录下的 main.py 文件中，运行以下命令来启动程序
 ```shell
 python main.py
+```
 
 ## 示例
 以下是程序的输出示例：
