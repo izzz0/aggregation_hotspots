@@ -13,6 +13,8 @@ class HotspotsAggregator:
             "Accept-Encoding": "gzip, deflate, sdch",
             "Accept-Language": "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7",
         }
+        #设置每个网站爬取的熟练，默认10
+        self.amount=10
 
     def print_toutiao(self):
         for site, values in self.result_dict.items():
@@ -34,7 +36,7 @@ class HotspotsAggregator:
     def save_data(self, site, data, key):
         # 保存到字典中
         for index, value in enumerate(data[key]):
-            if index < 10:
+            if index < amount:
                 if site == "微博头条":
                     if index == 0:
                         continue
