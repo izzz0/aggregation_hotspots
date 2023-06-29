@@ -37,6 +37,29 @@ python main.py
 ```shell
 self.amount=10
 ```
+如果你需要设置代理地址可以在这里修改：
+```shell
+self.proxies = {}
+```
+
 ## 示例
 以下是程序的输出示例：
-{'今日头条': {'头条标题1': 'https://www.toutiao.com/article1'}, '微博头条': {'热搜词1': 'https://s.weibo.com/weibo?q=热搜词1'}, '知乎热榜': {'问题1': 'https://www.zhihu.com/question1'}, '微信热榜': {'文章1': 'https://weixin-url1'}, 'B站热榜': {'视频1': 'https://bilibili-url1'}}
+```shell
+{
+    "今日头条": {
+        "头条标题1": "https: //www.toutiao.com/article1"
+    },
+    "微博头条": {
+        "热搜词1": "https://s.weibo.com/weibo?q=热搜词1"
+    },
+    "知乎热榜": {
+        "问题1": "https://www.zhihu.com/question1"
+    },
+    "微信热榜": {
+        "文章1": "https://weixin-url1"
+    },
+    "B站热榜": {
+        "视频1": "https://bilibili-url1"
+    }
+}
+```
