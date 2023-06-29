@@ -7,7 +7,7 @@ Hotspots Aggregator 是一个用于聚合各大网站热点新闻的 Python 程�
 1. 克隆代码仓库到本地：
    ```shell
    git clone https://github.com/your-username/hotspots-aggregator.git
-
+   ```
 2. 进入项目目录：
   ```shell
   cd hotspots-aggregator
