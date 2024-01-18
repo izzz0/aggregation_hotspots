@@ -1,7 +1,8 @@
-import requests
 import json
 from bs4 import BeautifulSoup
 import logging
+import aiohttp
+import asyncio
 
 class HotspotsAggregator:
     def __init__(self, proxies=None, amount=10):
@@ -26,14 +27,22 @@ class HotspotsAggregator:
         elif type == "html":
             return BeautifulSoup(response.text, "html.parser")
 
-    def get_content(self, url, type="json"):
-        try:
-            response = requests.get(url, headers=self.base_headers, proxies=self.proxies)
-            response.raise_for_status()
-            return self.parse_response(response, type)
-        except requests.RequestException as e:
-            logging.error(f"从 {url} 获取数据时出错: {e}")
-            return None
+    async def get_content_async(self, url, type="json"):
+        async with aiohttp.ClientSession(headers=self.base_headers) as session:
+            try:
+                async with session.get(url, timeout=10) as response:  # 使用 aiohttp 的内置超时
+                    if response.status == 200:
+                        if type == "json":
+                            return await response.json()
+                        elif type == "html":
+                            text = await response.text()
+                            return BeautifulSoup(text, "html.parser")
+                    else:
+                        logging.error(f"从 {url} 获取数据时出错: {response.status}")
+                        return None
+            except asyncio.TimeoutError:
+                logging.error(f"请求 {url} 超时")
+                return None
 
     def save_data(self, site, data, key):
         for index, value in enumerate(data[key]):
@@ -59,11 +68,11 @@ class HotspotsAggregator:
         else:
             return None, None
 
-    def scrape_site(self, site_name, url, content_type="json", data_key=None):
-        content = self.get_content(url, type=content_type)
+    async def scrape_site(self, site_name, url, content_type="json", data_key=None):
+        content = await self.get_content_async(url, type=content_type)
         if content_type == "json" and data_key:
             # 特殊处理
-            if site_name == "微博头条" or "B站热榜":
+            if site_name == "微博头条" or site_name == "B站热榜":
                 content = content['data']
         if content_type == "html":
             # 特殊处理HTML内容
@@ -75,14 +84,17 @@ class HotspotsAggregator:
         self.result_dict[site_name] = {}
         self.save_data(site_name, content, data_key or site_name.lower())
 
-    def aggregate_hotspots(self):
-        self.scrape_site("今日头条", "https://www.toutiao.com/hot-event/hot-board/?origin=toutiao_pc&_signature=_02B4Z6wo00f01fAdWzAAAIDAD15KaUl.IEnwOV-AABie87", "json", "data")
-        self.scrape_site("微博头条", "https://weibo.com/ajax/side/hotSearch", "json", "realtime")
-        self.scrape_site("知乎热榜", "https://www.zhihu.com/billboard", "html", "hotList")
-        self.scrape_site("微信热榜", "https://tophub.today/n/WnBe01o371", "html")
-        self.scrape_site("B站热榜", "https://api.bilibili.com/x/web-interface/ranking/v2?rid=0&type=all", "json", "list")
+    async def aggregate_hotspots(self):
+        await asyncio.gather(
+            self.scrape_site("今日头条", "https://www.toutiao.com/hot-event/hot-board/?origin=toutiao_pc&_signature=_02B4Z6wo00f01fAdWzAAAIDAD15KaUl.IEnwOV-AABie87", "json", "data"),
+            self.scrape_site("微博头条", "https://weibo.com/ajax/side/hotSearch", "json", "realtime"),
+            self.scrape_site("知乎热榜", "https://www.zhihu.com/billboard", "html", "hotList"),
+            self.scrape_site("微信热榜", "https://tophub.today/n/WnBe01o371", "html"),
+            self.scrape_site("B站热榜", "https://api.bilibili.com/x/web-interface/ranking/v2?rid=0&type=all", "json", "list")
+        )
+
 
 if __name__ == "__main__":
     aggregator = HotspotsAggregator()
-    aggregator.aggregate_hotspots()
+    asyncio.run(aggregator.aggregate_hotspots())
     aggregator.print_results()
